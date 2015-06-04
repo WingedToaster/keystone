@@ -264,7 +264,14 @@ location.prototype.updateItem = function(item, data) {
 
 	_.each(fieldKeys, setValue);
 
-	if (valuePaths.geo in values) {
+	if (valuePaths.geo_lat in values && valuePaths.geo_lng in values) {
+
+		var lat = utils.number(values[valuePaths.geo_lat]),
+			lng = utils.number(values[valuePaths.geo_lng]);
+
+		item.set(paths.geo, (lat && lng) ? [lng, lat] : undefined);
+
+	} else if (valuePaths.geo in values) {
 
 		var oldGeo = item.get(paths.geo) || [],
 			newGeo = values[valuePaths.geo];
@@ -276,13 +283,6 @@ location.prototype.updateItem = function(item, data) {
 		if (newGeo[0] !== oldGeo[0] || newGeo[1] !== oldGeo[1]) {
 			item.set(paths.geo, newGeo);
 		}
-
-	} else if (valuePaths.geo_lat in values && valuePaths.geo_lng in values) {
-
-		var lat = utils.number(values[valuePaths.geo_lat]),
-			lng = utils.number(values[valuePaths.geo_lng]);
-
-		item.set(paths.geo, (lat && lng) ? [lng, lat] : undefined);
 
 	}
 
